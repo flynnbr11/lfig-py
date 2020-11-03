@@ -1,0 +1,15 @@
+Metadata-Version: 1.0
+Name: lfig
+Version: 0.1
+Summary: Latex figures from matplotlib
+Home-page: UNKNOWN
+Author: Brian Flynn
+Author-email: flynnbr@tcd.ie
+License: MIT
+Description: # lfig - Latex figures from matplotlib
+        
+        ## Overview 
+        This package provides a single utility - a class which wraps functionality for ensuring 
+        matplotlib figures align nicely with latex documents. 
+        
+Platform: UNKNOWN

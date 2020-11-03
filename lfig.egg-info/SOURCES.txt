@@ -1,0 +1,9 @@
+README.md
+setup.py
+lfig.egg-info/PKG-INFO
+lfig.egg-info/SOURCES.txt
+lfig.egg-info/dependency_links.txt
+lfig.egg-info/requires.txt
+lfig.egg-info/top_level.txt
+src/__init__.py
+src/latex_figure.py
