@@ -16,6 +16,65 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 
+
+def get_latex_rc_params(
+    default_font_size = 11,
+    font_scale=1
+):
+    r"""
+    Get the dictionary of parameters which can be used to update matplotlib to look native to Latex. 
+    """
+
+    font_sizes = {
+        'default' : default_font_size,  # 11
+        'small' : default_font_size - 3, # 8
+        'medium' : default_font_size - 1, # 10
+        'large' : default_font_size + 3, # 14
+        'huge' : default_font_size + 9 # 20
+    }
+    font_sizes = {
+        k : int(font_sizes[k]*font_scale)
+        for k in font_sizes
+    }
+
+    latex_rc_params = {
+        # Use LaTeX to write all text
+        "pgf.texsystem": "pdflatex",
+        "text.usetex": True,
+        "font.family": "serif",
+        "text.latex.preamble" : [
+            # import pacakages needed to ensure latex renders text properly
+            r"\usepackage{underscore}",  # to ensure underscores don't cause crashes
+            r"\usepackage{amsmath}"
+        ],
+        "font.serif" : ["Times", "Palatino", "New Century Schoolbook", "Bookman", "Computer Modern Roman"],
+        "font.sans-serif" : ["Helvetica", "Avant Garde", "Computer Modern Sans seri"],
+        "font.cursive" : "Zapf Chancery",
+        "font.monospace" : ["Courier", "Computer Modern Typewriter"],
+        "font.weight" : "normal",
+        'pgf.rcfonts': False,
+
+        # Match font sizes
+        "font.size": font_sizes['default'],
+        "axes.titlesize": font_sizes['medium'],
+        "axes.labelsize": font_sizes['default'],
+        # Make the legend/label fonts a little smaller
+        "legend.fontsize": font_sizes['small'],
+        "xtick.labelsize": font_sizes['small'],
+        "ytick.labelsize": font_sizes['small'],
+        # Legend
+        "legend.fontsize" : font_sizes['medium'], 
+        "figure.titlesize" : font_sizes['default'],
+
+        # Plot
+        "lines.markersize" : 5,
+
+        # Format of figure
+        "savefig.format" : "pdf"
+    }
+    return latex_rc_params
+
+
 class LatexFigure():
     def __init__(
         self,
@@ -71,8 +130,9 @@ class LatexFigure():
         
         # Setup gridspec 
         self.use_gridspec = use_gridspec
-        if self.use_gridspec and auto_gridspec is not None :
+        if auto_gridspec is not None :
             # auto_gridspec is num subplots to draw
+            self.use_gridspec =  True
             ncols = int(np.ceil(np.sqrt(auto_gridspec)))
             nrows = int(np.ceil(auto_gridspec / ncols))
             self.gridspec_layout = (nrows, ncols)
@@ -127,36 +187,7 @@ class LatexFigure():
         Tell matplotlib to use custom font parameters. 
         """
 
-        self.font_default = int(11*self.font_scale) # set as same size as the doc font
-        self.font_small = int(8*self.font_scale)
-        self.font_medium = int(10*self.font_scale)
-        self.font_large = int(14*self.font_scale)
-        
-        self.rc_params = {
-            # Use LaTeX to write all text
-            "pgf.texsystem": "pdflatex",
-            "text.usetex": True,
-            "font.family": "serif",
-            "font.weight" : "normal",
-            'pgf.rcfonts': False,
-
-            # Match font sizes
-            "font.size": self.font_default,
-            "axes.titlesize": self.font_medium,
-            "axes.labelsize": self.font_default,
-            # Make the legend/label fonts a little smaller
-            "legend.fontsize": self.font_small,
-            "xtick.labelsize": self.font_small,
-            "ytick.labelsize": self.font_small,
-            # Legend
-            "legend.fontsize" : self.font_medium, 
-            "figure.titlesize" : self.font_default,
-            # Plot
-            "lines.markersize" : 5,
-            
-            # Format of figure
-            "savefig.format" : "pdf"
-        }
+        self.rc_params = get_latex_rc_params(font_scale = self.font_scale)
         self.rc_params.update(self.specific_rc_params)
 
         # Update font etc via matplotlib
@@ -234,7 +265,13 @@ class LatexFigure():
                 **ax_params
             )
             self.gridspec_axes[grid_position] = self.ax
+        else:
+            grid_position = (0,0)
 
+        # add data so the ax can be questioned
+        self.ax.grid_position = grid_position
+        self.ax.row = grid_position[0]
+        self.ax.col = grid_position[1]
         
         # set background to white # TODO make this optional
         self.ax.set_facecolor('white')
