@@ -21,6 +21,9 @@ __pycache__/
 *~
 *.rdb
 *conflicted*
+
+# Exceptions
+!requirements.txt
 # Documentation build directories
 docs/_build
 

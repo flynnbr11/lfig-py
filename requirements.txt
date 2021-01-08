@@ -1,0 +1,4 @@
+
+numpy==1.15.2
+packaging==20.1
+matplotlib==3.0.3
