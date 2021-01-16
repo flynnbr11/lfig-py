@@ -9,7 +9,7 @@ This class ensures the figures are the right size for the page,
 It also sets text to match the size and font of Latex, with functionality to specify any aspect. 
 
 """
-
+import os 
 import numpy as np
 
 import matplotlib
@@ -425,6 +425,16 @@ class LatexFigure():
             default format used from self.rc_params.
         """
         self.fig.tight_layout(pad = self.delta)
+
+        # ensure file path is formatted correctly
+        valid_file_formats = ["png", "pdf", "jpeg"]
+        file_name_alone = os.path.split(os.path.abspath(save_to_file))[-1]
+
+        if file_name_alone.split(".")[-1] not in valid_file_formats:
+            # if given path doesn't include a valid extension
+            save_to_file = "{}.{}".format(save_to_file, file_format)
+
+
         self.fig.savefig(
             save_to_file, 
             bbox_inches='tight',
