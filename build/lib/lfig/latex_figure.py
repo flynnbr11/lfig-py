@@ -143,8 +143,12 @@ class LatexFigure():
         if auto_gridspec is not None :
             # auto_gridspec is num subplots to draw
             self.use_gridspec =  True
-            ncols = int(np.ceil(np.sqrt(auto_gridspec)))
-            nrows = int(np.ceil(auto_gridspec / ncols))
+            if auto_gridspec <=3:
+                ncols = auto_gridspec
+                nrows = 1
+            else:
+                ncols = int(np.ceil(np.sqrt(auto_gridspec)))
+                nrows = int(np.ceil(auto_gridspec / ncols))
             self.gridspec_layout = (nrows, ncols)
         elif gridspec_layout is not None:
             self.use_gridspec = True
