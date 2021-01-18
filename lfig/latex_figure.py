@@ -83,6 +83,7 @@ class LatexFigure():
         square_plot=False, 
         use_gridspec=False, 
         auto_gridspec=None, 
+        auto_gridspec_max=4,
         gridspec_layout=(1,1),
         gridspec_params={},
         font_scale=1,
@@ -104,6 +105,9 @@ class LatexFigure():
             grid of axes
         :param int auto_gridspec: 
             if not None, the number of subplots to layout in a square grid
+        :param int auto_gridspec_max:
+            maximum number of axes to allow on a single row before going to multi-row, 
+            when using auto_gridspec
         :param tuple gridspec_layout: 
             (num_rows, num_cols) to use in GridSpec grid
         :param dict gridspec_params: 
@@ -121,7 +125,7 @@ class LatexFigure():
         plt.style.use(plot_style)
         
         if width == 'thesis':
-            # 6.9 inches; assumes latex is using geometry wider than this
+            # 6.9 inches; assumes latex is using geometry slightly wider than this
             self.width_pt = 500
         elif width == 'default_a4': 
             self.width_pt = 448
@@ -143,7 +147,7 @@ class LatexFigure():
         if auto_gridspec is not None :
             # auto_gridspec is num subplots to draw
             self.use_gridspec =  True
-            if auto_gridspec <=3:
+            if auto_gridspec <= auto_gridspec_max:
                 ncols = auto_gridspec
                 nrows = 1
             else:
@@ -427,7 +431,11 @@ class LatexFigure():
         self.fig.tight_layout(pad = self.delta)
 
         # ensure file path is formatted correctly
-        valid_file_formats = ["png", "pdf", "jpeg"]
+        valid_file_formats = [
+            # i.e. those supported by matplotlib savefig
+            # TODO extend to complete list of valid formats
+            "png", "pdf", "jpeg", "svg", "eps"
+        ]
         file_name_alone = os.path.split(os.path.abspath(save_to_file))[-1]
 
         if file_name_alone.split(".")[-1] not in valid_file_formats:
