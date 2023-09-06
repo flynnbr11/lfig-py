@@ -16,7 +16,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 
-
 def get_latex_rc_params(
     default_font_size = 11,
     font_scale=1
@@ -42,11 +41,11 @@ def get_latex_rc_params(
         "pgf.texsystem": "pdflatex",
         "text.usetex": True,
         "font.family": "serif",
-        "text.latex.preamble" : [
-            # import pacakages needed to ensure latex renders text properly
-            r"\usepackage{underscore}",  # to ensure underscores don't cause crashes
-            r"\usepackage{amsmath}"
-        ],
+        # import pacakages needed to ensure latex renders text properly
+        "text.latex.preamble" : r"""
+            \usepackage{underscore}
+            \usepackage{amsmath}
+        """, 
         "font.serif" : ["Times", "Palatino", "New Century Schoolbook", "Bookman", "Computer Modern Roman"],
         "font.sans-serif" : ["Helvetica", "Avant Garde", "Computer Modern Sans seri"],
         "font.cursive" : "Zapf Chancery",
@@ -73,7 +72,6 @@ def get_latex_rc_params(
         "savefig.format" : "pdf"
     }
     return latex_rc_params
-
 
 class LatexFigure():
     def __init__(
@@ -141,7 +139,11 @@ class LatexFigure():
         self.specific_rc_params = rc_params
         self.square_plot = square_plot
         self.ax_counter = 0
+        self.n_axes = np.product(gridspec_layout)
+        if self.n_axes == 1:
+            auto_label = False
         self.auto_label = auto_label
+        
 
         # Setup gridspec 
         if auto_gridspec is not None :
