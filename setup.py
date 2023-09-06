@@ -1,4 +1,13 @@
 from setuptools import setup, find_packages
+import re, io
+
+# Following https://gist.github.com/arsho/fc651bfadd8a0f42be72156fd21bd8a9 to update package on PyPi
+
+__version__ = re.search(
+    r'__version__\s*=\s*[\'"]([^\'"]*)[\'"]',  # It excludes inline comment too
+    io.open("lfig/__init__.py", encoding="utf_8_sig").read(),
+).group(1)
+
 
 setup(
     name="lfig",

@@ -1,1 +1,0 @@
-from .latex_figure import LatexFigure, get_latex_rc_params
